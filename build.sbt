@@ -11,7 +11,9 @@ val scala3 = "3.2.2"
 
 scalaVersion := scala212
 
+val openAIScalaVersion = "0.3.2"
+
 libraryDependencies ++= Seq(
   "io.cequence" %% "pinecone-scala-client" % version.value,
-  "io.cequence" %% "openai-scala-client" % "0.3.2"
+  "io.cequence" %% "openai-scala-client" % openAIScalaVersion
 )
