@@ -18,7 +18,7 @@ This library is available and published as open source under the terms of the [M
 
 ## Contributors 🙏
 
-This project is open-source and welcomes any contribution or feedback ([here](https://github.com/cequence-io/pinecone-scala-client/issues)).
+This project is open-source and welcomes any contribution or feedback ([here](https://github.com/cequence-io/pinecone-openai-scala-demo/issues)).
 
 Development of this library has been supported by  [<img src="https://cequence.io/favicon-16x16.png"> - Cequence.io](https://cequence.io) - `The future of contracting`
 
