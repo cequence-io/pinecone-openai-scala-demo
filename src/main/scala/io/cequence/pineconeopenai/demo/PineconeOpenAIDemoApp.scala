@@ -2,35 +2,34 @@ package io.cequence.pineconeopenai.demo
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
+import io.cequence.openaiscala.service.OpenAIServiceFactory
 
 import scala.concurrent.{ExecutionContext, Future}
-import io.cequence.pineconescala.service.{PineconeIndexService, PineconeIndexServiceFactory, PineconeVectorService, PineconeVectorServiceFactory}
+import io.cequence.pineconescala.service.{PineconeIndexServiceFactory, PineconeServiceConsts, PineconeVectorServiceFactory}
 
-trait PineconeOpenAIDemoApp extends App {
+trait PineconeOpenAIDemoApp extends App with PineconeServiceConsts {
 
   protected implicit val ec: ExecutionContext = ExecutionContext.global
 
   private val actorSystem: ActorSystem = ActorSystem()
-  private implicit val materializer: Materializer = Materializer(actorSystem)
+  protected implicit val materializer: Materializer = Materializer(actorSystem)
 
-  protected def execWithIndexService: PineconeIndexService => Future[_]
-  protected def execWithVectorService: (String => Future[PineconeVectorService]) => Future[_]
+  // impl hook
+  protected def exec: Future[_]
+
+  protected lazy val pineconeIndexService = PineconeIndexServiceFactory()
+  protected def createPineconeVectorService(indexName: String) =
+    PineconeVectorServiceFactory(indexName).map(
+      _.getOrElse(
+        throw new Exception(s"Could not find index '${indexName}'")
+      )
+    )
+
+  protected lazy val openAIService = OpenAIServiceFactory()
 
   {
     for {
-      pineconeIndexService <- Future(
-        PineconeIndexServiceFactory() // we wrap it in a Future just because of the recover block
-      )
-
-      _ <- execWithIndexService(pineconeIndexService)
-
-      _ <- execWithVectorService((indexName: String) =>
-        PineconeVectorServiceFactory(indexName).map(
-          _.getOrElse(
-            throw new Exception(s"Could not find index '${indexName}'")
-          )
-        )
-      )
+      _ <- exec
 
       _ <- actorSystem.terminate()
     } yield
