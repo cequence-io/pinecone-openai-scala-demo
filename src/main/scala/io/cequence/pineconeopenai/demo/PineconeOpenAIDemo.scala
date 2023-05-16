@@ -74,7 +74,7 @@ object PineconeOpenAIDemo extends PineconeOpenAIDemoApp {
       // create a service for a given index name
       pineconeVectorService <- createPineconeVectorService(indexName)
 
-      // take the first 1000 entries and extract text, result is an iterator
+      // take the first 1000 entries and extract the text. the result is an iterator
       trecTextsIterator = scala.io.Source.fromFile("src/main/resources/trec-train.json")
         .getLines()
         .take(1000)
